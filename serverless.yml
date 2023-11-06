@@ -1,0 +1,38 @@
+service: aws-node-http-api-project
+frameworkVersion: '3'
+plugins:
+  - serverless-esbuild
+  - serverless-offline
+  - serverless-dotenv-plugin
+provider:
+  name: aws
+  runtime: nodejs18.x
+
+functions:
+  api:
+    handler: index.hello
+    events:
+      - httpApi:
+          path: /
+          method: get
+
+package:
+  individually: true
+  patterns:
+    - '!node_modules/.prisma/client/libquery_engine-*'
+    - '!node_modules/@prisma/engines/**'
+    - 'node_modules/.prisma/client/schema.prisma'
+    - 'node_modules/.prisma/client/libquery_engine-rhel-*'
+custom:
+  dotenv:
+    path: .env
+  esbuild:
+    bundle: true
+    minify: false
+    sourcemap: true
+    platform: node
+    concurrency: 10
+    exclude: 
+      - aws-sdk
+      - node_modules
+
